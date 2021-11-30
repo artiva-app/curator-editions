@@ -11,4 +11,5 @@ export interface EditionsData {
   editionSize: BigNumberish;
   price: BigNumberish;
   royaltyBPS: BigNumberish;
+  owner: string;
 }

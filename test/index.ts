@@ -23,6 +23,7 @@ const editionData: EditionsData = {
   editionSize: 10,
   royaltyBPS: 10,
   price: ethers.utils.parseEther("0.2"),
+  owner: "",
 };
 
 describe("Curator Editions", function () {
@@ -74,6 +75,8 @@ describe("Curator Editions", function () {
 
     const s2 = (await ethers.getSigners())[1];
     const s2A = await s2.getAddress();
+
+    editionData.owner = signerAddress;
 
     splitData = {
       title: "Test",

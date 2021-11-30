@@ -24,6 +24,7 @@ contract CuratorEditions {
         uint256 editionSize;
         uint256 price;
         uint256 royaltyBPS;
+        address owner;
     }
 
     struct SplitData {
@@ -32,7 +33,7 @@ contract CuratorEditions {
         uint256[] shares;
     }
 
-    address public constant ETH = 0x0000000000000000000000000000000000000000;
+    address public constant NATIVE_CURRENCY = 0x0000000000000000000000000000000000000000;
     address public singleEditionMintableCreatorAddress;
     address public paymentSplitterFactoryAddress;
 
@@ -54,7 +55,7 @@ contract CuratorEditions {
 
         ISingleEditionMintable edition = creator.getEditionAtId(editionId);
         edition.setApprovedMinter(address(this), true);
-        edition.transferOwnership(msg.sender);
+        edition.transferOwnership(_editionData.owner);
         editionIdToSplitter[editionId] = splitter;
         editionIdToSalePrice[editionId] = _editionData.price;
 
@@ -86,7 +87,7 @@ contract CuratorEditions {
     }
 
     function withdraw(uint256 _editionId) public {
-        IPaymentSplitter(editionIdToSplitter[_editionId]).release(ETH, msg.sender);
+        IPaymentSplitter(editionIdToSplitter[_editionId]).release(NATIVE_CURRENCY, msg.sender);
     }
 
     function getEditionAddress(uint256 _editionId) public view returns(address) {

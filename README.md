@@ -1,4 +1,4 @@
-# Zora NFT Editions
+# Curator NFT Editions
 
 ### What are these contracts?
 `CuratorEditions`

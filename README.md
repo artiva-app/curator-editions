@@ -31,10 +31,10 @@ call `createCuratorEdition` with the given arguments to create a new editions co
     - Price: The default price for the edition
     - BPS Royalty: 500 = 5%, 1000 = 10%, so on and so forth, set to 0 for no on-chain royalty (not supported by all marketplaces)
 
--SplitData
-    -Title: Title of the editions split
-    -Payees: List of addresses the will recieve a payout from the edition sale
-    -Shares: List of shares the corrosponding address will receive on sale
+- SplitData
+    - Title: Title of the editions split
+    - Payees: List of addresses the will recieve a payout from the edition sale
+    - Shares: List of shares the corrosponding address will receive on sale
 
 ### How do I sell/distribute editions?
 

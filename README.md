@@ -7,8 +7,8 @@
 ### How do I create a new contract?
 
 ### Directly on the blockchain:
-1. Find/Deploy the `SingleEditionMintableCreator` contract
-2. Call `createCuratorEdition` on the `SingleEditionMintableCreator`
+1. Find/Deploy the `CuratorEditions` contract
+2. Call `createCuratorEdition` on the `CuratorEditions`
 
 
 ### Where is the factory contract deployed:

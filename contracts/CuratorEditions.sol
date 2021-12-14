@@ -5,11 +5,9 @@ import {ISingleEditionMintableCreator} from "./interfaces/ISingleEditionMintable
 import {IPaymentSplitterFactory} from "./interfaces/IPaymentSplitterFactory.sol";
 import {IPaymentSplitter} from "./interfaces/IPaymentSplitter.sol";
 import {ISingleEditionMintable} from "./interfaces/ISingleEditionMintable.sol";
-import {SingleEditionMintable} from "@zoralabs/nft-editions-contracts/contracts/SingleEditionMintable.sol";
-import {SingleEditionMintableCreator} from "@zoralabs/nft-editions-contracts/contracts/SingleEditionMintableCreator.sol";
-import {SharedNFTLogic} from "@zoralabs/nft-editions-contracts/contracts/SharedNFTLogic.sol";
 
 contract CuratorEditions {
+    event CreatedEdition(address editionContractAddress, uint256 editionId);
     event PriceChanged(uint256 editionId, uint256 amount);
     event EditionSold(uint256 editionId, uint256 price, address owner);
 
@@ -22,8 +20,8 @@ contract CuratorEditions {
         string imageUrl;
         bytes32 imageHash;
         uint256 editionSize;
-        uint256 price;
         uint256 royaltyBPS;
+        uint256 salePrice;
         address owner;
     }
 
@@ -50,15 +48,16 @@ contract CuratorEditions {
         SplitData memory _splitData
     ) external returns (uint256) {
         ISingleEditionMintableCreator creator = ISingleEditionMintableCreator(singleEditionMintableCreatorAddress);
-        uint editionId = creator.createEdition(_editionData.name, _editionData.symbol, _editionData.description, _editionData.animationUrl, _editionData.animationHash, _editionData.imageUrl, _editionData.imageHash, _editionData.editionSize, _editionData.royaltyBPS);
+        uint editionId = creator.createEdition(_editionData.name, _editionData.symbol, _editionData.description, _editionData.animationUrl, _editionData.animationHash, _editionData.imageUrl, _editionData.imageHash, _editionData.editionSize, _editionData.royaltyBPS, 0);
         address splitter = IPaymentSplitterFactory(paymentSplitterFactoryAddress).deployPaymentSplitter(msg.sender, _splitData.title, _splitData.payees, _splitData.shares);
 
         ISingleEditionMintable edition = creator.getEditionAtId(editionId);
         edition.setApprovedMinter(address(this), true);
         edition.transferOwnership(_editionData.owner);
         editionIdToSplitter[editionId] = splitter;
-        editionIdToSalePrice[editionId] = _editionData.price;
+        editionIdToSalePrice[editionId] = _editionData.salePrice;
 
+        emit CreatedEdition(address(edition), editionId);
         return (editionId);
     }
 
@@ -89,6 +88,10 @@ contract CuratorEditions {
     function withdraw(uint256 _editionId) public {
         IPaymentSplitter(editionIdToSplitter[_editionId]).release(NATIVE_CURRENCY, msg.sender);
     }
+
+    function getBalance(uint256 _editionId) public view returns(uint256) {
+        return IPaymentSplitter(editionIdToSplitter[_editionId]).getBalance(NATIVE_CURRENCY, msg.sender);
+    } 
 
     function getEditionAddress(uint256 _editionId) public view returns(address) {
         ISingleEditionMintableCreator creator = ISingleEditionMintableCreator(singleEditionMintableCreatorAddress);

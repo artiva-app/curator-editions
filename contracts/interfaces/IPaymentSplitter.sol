@@ -25,4 +25,6 @@ interface IPaymentSplitter {
     function payees(uint256 index) external view returns (address);
 
     function release(address token, address account) external;
+
+    function getBalance(address token, address account) external view returns(uint256);
 }

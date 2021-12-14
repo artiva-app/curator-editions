@@ -8,6 +8,7 @@ import "hardhat-gas-reporter";
 import "solidity-coverage";
 import "hardhat-deploy";
 import "@nomiclabs/hardhat-ethers";
+import networks from "./networks";
 
 dotenv.config();
 
@@ -25,20 +26,30 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 // Go to https://hardhat.org/config/ to learn more
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.6",
-  networks: {
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+  defaultNetwork: "hardhat",
+  solidity: {
+    version: "0.8.6",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 100,
+      },
     },
   },
+  networks,
   gasReporter: {
-    enabled: process.env.REPORT_GAS !== undefined,
-    currency: "USD",
+    currency: "ETH",
+    gasPrice: 80,
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,
+  },
+  namedAccounts: {
+    deployer: 0,
+    purchaser: 0,
+    singleEditionMintableCreator: {
+      4: "0x3975b5ECF50986c0a2Cf899FFEc5A5e569429242",
+    },
   },
 };
 

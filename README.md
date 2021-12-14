@@ -13,7 +13,7 @@
 
 ### Where is the factory contract deployed:
 
-**TBD**
+Rinkeby: 0x2031144a58D6D2d5E5AFb1c7BE14036C5e74003f
 
 ### How do I create a new edition?
 

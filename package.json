@@ -1,5 +1,13 @@
 {
-  "name": "hardhat-project",
+  "name": "@artiva/nft-curator-editions-contracts",
+  "scripts": {
+    "typechain": "hardhat typechain",
+    "compile": "hardhat compile",
+    "deploy": "hardhat deploy",
+    "test": "hardhat test",
+    "build": "yarn run prepack",
+    "prepack": "hardhat compile"
+  },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-etherscan": "^2.1.8",
@@ -33,8 +41,8 @@
     "typescript": "^4.5.2"
   },
   "dependencies": {
+    "@artiva/nft-editions-contracts": "^1.0.0",
     "@openzeppelin/contracts": "^4.4.0",
-    "ethers": "^5.5.1",
-    "@zoralabs/nft-editions-contracts": "^1.0.2"
+    "ethers": "^5.5.1"
   }
 }

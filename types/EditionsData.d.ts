@@ -9,7 +9,7 @@ export interface EditionsData {
   imageUrl: string;
   imageHash: BytesLike;
   editionSize: BigNumberish;
-  price: BigNumberish;
+  salePrice: BigNumberish;
   royaltyBPS: BigNumberish;
   owner: string;
 }

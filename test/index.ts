@@ -22,7 +22,7 @@ const editionData: EditionsData = {
     "0x0000000000000000000000000000000000000000000000000000000000000000",
   editionSize: 10,
   royaltyBPS: 10,
-  price: ethers.utils.parseEther("0.2"),
+  salePrice: ethers.utils.parseEther("0.2"),
   owner: "",
 };
 
@@ -86,11 +86,9 @@ describe("Curator Editions", function () {
   });
 
   it("Creates Editions", async function () {
-    const tx = await curatorEditions.createCuratorEdition(
-      editionData,
-      splitData
-    );
-    await tx.wait();
+    expect(
+      await curatorEditions.createCuratorEdition(editionData, splitData)
+    ).to.emit(curatorEditions, "CreatedEdition");
 
     const editionAddress = await curatorEditions.getEditionAddress("0");
     const minterContract = (await ethers.getContractAt(
@@ -112,6 +110,9 @@ describe("Curator Editions", function () {
     );
     expect(await minterContract.editionSize()).to.be.equal(10);
     expect(await minterContract.owner()).to.be.equal(signerAddress);
+    expect(await curatorEditions.editionIdToSalePrice("0")).to.be.equal(
+      ethers.utils.parseEther("0.2")
+    );
 
     const splitterAddress = await curatorEditions.editionIdToSplitter("0");
     const splitterContract = (await ethers.getContractAt(
@@ -144,6 +145,11 @@ describe("Curator Editions", function () {
       });
 
       const signerBalance = await signer.getBalance();
+      expect(
+        await (
+          await curatorEditions.getBalance("0")
+        ).gt(ethers.utils.parseEther("0.09"))
+      ).equals(true);
       await curatorEditions.withdraw("0");
       expect(
         (await signer.getBalance())

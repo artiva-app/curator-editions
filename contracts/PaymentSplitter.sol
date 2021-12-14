@@ -79,6 +79,14 @@ contract PaymentSplitter is Initializable, IPaymentSplitter {
         emit PaymentReleased(token, account, payment);
     }
 
+    function getBalance(address token, address account) external view override returns(uint256) {
+        require(shares[account] > 0, "FORBIDDEN");
+
+        uint256 totalReceived = token.balanceOf(address(this)) + totalReleased[token];
+        uint256 payment = (totalReceived * shares[account]) / totalShares - released[token][account];
+        return payment;
+    }
+
     /**
      * @dev Add a new payee to the contract.
      * @param account The address of the payee to add.

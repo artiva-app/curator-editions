@@ -48,7 +48,7 @@ const config: HardhatUserConfig = {
     deployer: 0,
     purchaser: 0,
     singleEditionMintableCreator: {
-      4: "0x3975b5ECF50986c0a2Cf899FFEc5A5e569429242",
+      4: "0xb01912a8a2b21B181fcD0a22CF85Bf10d9BffB69",
     },
   },
 };

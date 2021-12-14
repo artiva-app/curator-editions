@@ -61,6 +61,22 @@ contract CuratorEditions {
         return (editionId);
     }
 
+    function batchPurchase(uint256 _amount, uint256 _editionId) external payable {
+        address splitter = editionIdToSplitter[_editionId];
+        uint256 salePrice = editionIdToSalePrice[_editionId];
+        require(salePrice > 0, "NOT_FOR_SALE");
+        require(msg.value == (salePrice * _amount), "INVALID_PRICE");
+
+        ISingleEditionMintable edition = ISingleEditionMintableCreator(singleEditionMintableCreatorAddress).getEditionAtId(_editionId);
+        for(uint256 i; i < _amount; i++) {
+            edition.mintEdition(msg.sender);
+            emit EditionSold(_editionId, salePrice, msg.sender);
+        }
+        
+        (bool sent,) = payable(splitter).call{value: msg.value}("");
+        require(sent, "SPLITTER_ERROR");
+    }
+
     function purchase(uint256 _editionId) external payable returns (uint256) {
         address splitter = editionIdToSplitter[_editionId];
         uint256 salePrice = editionIdToSalePrice[_editionId];

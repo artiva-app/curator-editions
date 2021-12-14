@@ -139,6 +139,30 @@ describe("Curator Editions", function () {
       ).to.emit(curatorEditions, "EditionSold");
     });
 
+    it("batch purchases new editions", async () => {
+      expect(
+        await curatorEditions.batchPurchase(10, "0", {
+          value: ethers.utils.parseEther("2"),
+        })
+      ).to.emit(curatorEditions, "EditionSold");
+    });
+
+    it("doesnt overpurchase new editions", async () => {
+      await expect(
+        curatorEditions.batchPurchase(11, "0", {
+          value: ethers.utils.parseEther("2.2"),
+        })
+      ).to.be.revertedWith("Sold out");
+    });
+
+    it("accept wrong payments", async () => {
+      await expect(
+        curatorEditions.batchPurchase(6, "0", {
+          value: ethers.utils.parseEther("2"),
+        })
+      ).to.be.revertedWith("INVALID_PRICE");
+    });
+
     it("splits payments", async () => {
       await curatorEditions.purchase("0", {
         value: ethers.utils.parseEther("0.2"),
@@ -155,6 +179,25 @@ describe("Curator Editions", function () {
         (await signer.getBalance())
           .sub(signerBalance)
           .gte(ethers.utils.parseEther("0.09"))
+      ).equals(true);
+    });
+
+    it("batch splits payments", async () => {
+      await curatorEditions.batchPurchase(10, "0", {
+        value: ethers.utils.parseEther("2"),
+      });
+
+      const signerBalance = await signer.getBalance();
+      expect(
+        await (
+          await curatorEditions.getBalance("0")
+        ).gt(ethers.utils.parseEther("0.9"))
+      ).equals(true);
+      await curatorEditions.withdraw("0");
+      expect(
+        (await signer.getBalance())
+          .sub(signerBalance)
+          .gte(ethers.utils.parseEther("0.9"))
       ).equals(true);
     });
 
